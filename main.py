@@ -20,7 +20,7 @@ def make_table(df):
 # Load data
 conditions = ["confirmed", "deaths", "recovered"]
 
-daily_df = pd.read_csv("Data/daily_report.csv")
+daily_df = pd.read_csv("data/daily_report.csv")
 
 totals_df = (
     daily_df[["Confirmed", "Deaths", "Recovered"]].sum().reset_index(name="count")
@@ -51,7 +51,7 @@ def make_country_df(country):
     final_df = None
 
     for condition in conditions:
-        df = pd.read_csv(f"Data/time_{condition}.csv")
+        df = pd.read_csv(f"data/time_{condition}.csv")
         df = df.rename(
             columns={"Country/Region": "Country_Region", "Lat": "Lat", "Long": "Long_"}
         )
@@ -77,7 +77,7 @@ def make_global_df():
     final_df = None
 
     for condition in conditions:
-        df = pd.read_csv(f"Data/time_{condition}.csv")
+        df = pd.read_csv(f"data/time_{condition}.csv")
         df = df.rename(
             columns={"Country/Region": "Country_Region", "Lat": "Lat", "Long": "Long_"}
         )
