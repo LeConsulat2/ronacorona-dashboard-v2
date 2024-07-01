@@ -16,6 +16,7 @@ st.markdown(
     <style>
     .css-1aumxhk{
         height: 30vh; /* Adjust this value as needed */
+        overflow-y: auto; /* Add scrolling if needed */
     }
     </style>
     """,
