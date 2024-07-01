@@ -17,6 +17,7 @@ st.markdown(
     /* Adjust the vh for the main container */
     .main .block-container {
         height: 100vh; /* Adjust this value as needed */
+        max-height:100vh;
         width: 100vw; /* Adjust this value as needed */
         max-width: 100vw /* Adjust this value as needed */
         overflow-y: auto; /* Add scrolling if needed */
