@@ -11,17 +11,17 @@ st.set_page_config(
 )
 
 # Embed custom CSS
-st.markdown(
-    """
-    <style>
-    .css-1aumxhk{
-        height: 100vh; /* Adjust this value as needed */
-        overflow-y: auto; /* Add scrolling if needed */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+# st.markdown(
+#     """
+#     <style>
+#     .css-1aumxhk{
+#         height: 100vh; /* Adjust this value as needed */
+#         overflow-y: auto; /* Add scrolling if needed */
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True,
+# )
 
 
 # Function to display a data table
