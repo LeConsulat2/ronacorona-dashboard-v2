@@ -17,9 +17,9 @@ st.markdown(
     .css-1aumxhk{
         height: 90vh; /* Adjust this value as needed */
     }
-
-
-    """
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
 
