@@ -10,6 +10,18 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Embed custom CSS
+st.markdown(
+    """
+    <style>
+    .css-1aumxhk{
+        height: 90vh; /* Adjust this value as needed */
+    }
+
+
+    """
+)
+
 
 # Function to display a data table
 def make_table(df):
