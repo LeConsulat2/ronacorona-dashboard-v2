@@ -15,7 +15,7 @@ st.markdown(
     """
     <style>
     .css-1aumxhk{
-        height: 50vh; /* Adjust this value as needed */
+        height: 120vh; /* Adjust this value as needed */
     }
     </style>
     """,
