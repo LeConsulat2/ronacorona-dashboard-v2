@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Embed custom CSS
+# Embed custom CSS to force dark theme
 st.markdown(
     """
     <style>
@@ -22,27 +22,49 @@ st.markdown(
         max-width: 100vw; /* Adjust this value as needed */
         overflow-y: auto; /* Add scrolling if needed */
     }
-    </style>   
+
+    /* Remove the header background */
+    .stApp > header {
+        background-color: #111111;
+    }
+
+    /* Additional styles for the Streamlit app */
+    .stApp {
+        margin: auto;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        overflow: auto;
+        background: #111111;
+        color: white; /* Set text color to white */
+        animation: gradient 15s ease infinite;
+        background-size: 400% 400%;
+        background-attachment: fixed;
+    }
+
+    /* Make sure the text inside other containers is also white */
+    .main .block-container, .main .block-container div, .main .block-container p, .main .block-container h1, .main .block-container h2, .main .block-container h3, .main .block-container .stMarkdown, .main .block-container .stDataFrame {
+        color: white;
+    }
+
+    /* Set background for dataframe elements */
+    .stDataFrame, .stDataFrame table {
+        background-color: #222222;
+        color: white;
+    }
+
+    /* Style the dropdown */
+    .stSelectbox {
+        color: white;
+        background-color: #333333;
+    }
+
+    /* Style the plotly graphs */
+    .stPlotlyChart {
+        background-color: #111111;
+    }
+    </style>
     """,
     unsafe_allow_html=True,
 )
-
-#     /* Additional styles for the Streamlit app */
-#     .stApp {
-#         margin: auto;
-#         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-#         overflow: auto;
-#         background: #111111;
-#         color: white; /* Set text color to white */
-#         animation: gradient 15s ease infinite;
-#         background-size: 400% 400%;
-#         background-attachment: fixed;
-#     }
-
-#     /* Make sure the text inside other containers is also white */
-#     .main .block-container, .main .block-container div, .main .block-container p, .main .block-container h1, .main .block-container h2, .main .block-container h3 {
-#         color: white;
-#     }
 
 
 # Function to display a data table
