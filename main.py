@@ -30,7 +30,7 @@ st.markdown(
         overflow: auto;
         background: linear-gradient(315deg, #4f2991 3%, #7dc4ff 38%, #36cfcc 68%, #a92ed3 98%);
         animation: gradient 15s ease infinite;
-        background-size: 400% 400%;
+        background-size: 400%;
         background-attachment: fixed;
     }
     </style>
