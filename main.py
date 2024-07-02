@@ -33,10 +33,16 @@ st.markdown(
         margin: auto;
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         overflow: auto;
-        background: #111111
+        background: #111111;
+        color: white; /* Set text color to white */
         animation: gradient 15s ease infinite;
         background-size: 400% 400%;
         background-attachment: fixed;
+    }
+
+    /* Make sure the text inside other containers is also white */
+    .main .block-container, .main .block-container div, .main .block-container p, .main .block-container h1, .main .block-container h2, .main .block-container h3 {
+        color: white;
     }
     </style>
     """,
