@@ -10,23 +10,26 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Embed custom CSS
-# st.markdown(
-#     """
-#     <style>
-#     /* Adjust the vh for the main container */
-#     .main .block-container {
-#         height: 90vh; /* Adjust this value as needed */
-#         max-height: 90vh;
-#         width: 100vw; /* Adjust this value as needed */
-#         max-width: 100vw; /* Adjust this value as needed */
-#         overflow-y: auto; /* Add scrolling if needed */
-#     }
-
+Embed custom CSS
+st.markdown(
+    """
+    <style>
+    /* Adjust the vh for the main container */
+    .main .block-container {
+        height: 90vh; /* Adjust this value as needed */
+        max-height: 90vh;
+        width: 100vw; /* Adjust this value as needed */
+        max-width: 100vw; /* Adjust this value as needed */
+        overflow-y: auto; /* Add scrolling if needed */
+    }
+)
 #     /* Remove the header background */
 #     .stApp > header {
 #         background-color: #111111;
-#     }
+#     </style>
+#     """,
+     unsafe_allow_html=True,
+)
 
 #     /* Additional styles for the Streamlit app */
 #     .stApp {
@@ -44,10 +47,7 @@ st.set_page_config(
 #     .main .block-container, .main .block-container div, .main .block-container p, .main .block-container h1, .main .block-container h2, .main .block-container h3 {
 #         color: white;
 #     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True,
-# )
+
 
 
 # Function to display a data table
