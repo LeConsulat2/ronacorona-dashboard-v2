@@ -25,7 +25,7 @@ st.markdown(
 
     /* Remove the header background */
     .stApp > header {
-        background-color: transparent;
+        background-color: #F11111;
     }
 
     /* Additional styles for the Streamlit app */
@@ -33,7 +33,7 @@ st.markdown(
         margin: auto;
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         overflow: auto;
-        background: linear-gradient(315deg, #4f2991 3%, #7dc4ff 38%, #36cfcc 68%, #a92ed3 98%);
+        background: #111111
         animation: gradient 15s ease infinite;
         background-size: 400% 400%;
         background-attachment: fixed;
