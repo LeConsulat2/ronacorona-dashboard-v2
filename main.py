@@ -11,26 +11,27 @@ st.set_page_config(
 )
 
 # Embed custom CSS
+import streamlit as st
+
 st.markdown(
     """
     <style>
     /* Adjust the vh for the main container */
     .main .block-container {
         height: 90vh; /* Adjust this value as needed */
-        max-height:90vh;
+        max-height: 90vh;
         width: 100vw; /* Adjust this value as needed */
-        max-width: 100vw /* Adjust this value as needed */
+        max-width: 100vw; /* Adjust this value as needed */
         overflow-y: auto; /* Add scrolling if needed */
-        
     }
     /* Additional styles for the Streamlit app */
-    stApp {
+    body {
         margin: auto;
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         overflow: auto;
         background: linear-gradient(315deg, #4f2991 3%, #7dc4ff 38%, #36cfcc 68%, #a92ed3 98%);
         animation: gradient 15s ease infinite;
-        background-size: 400%;
+        background-size: 400% 400%;
         background-attachment: fixed;
     }
     </style>
