@@ -25,7 +25,7 @@ st.markdown(
 
     /* Remove the header background */
     .stApp > header {
-        background-color: #F11111;
+        background-color: #111111;
     }
 
     /* Additional styles for the Streamlit app */
