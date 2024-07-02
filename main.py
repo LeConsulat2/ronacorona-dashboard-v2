@@ -10,7 +10,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-Embed custom CSS
+# Embed custom CSS
 st.markdown(
     """
     <style>
@@ -28,7 +28,7 @@ st.markdown(
 #         background-color: #111111;
 #     </style>
 #     """,
-     unsafe_allow_html=True,
+    unsafe_allow_html=True,
 )
 
 #     /* Additional styles for the Streamlit app */
@@ -47,7 +47,6 @@ st.markdown(
 #     .main .block-container, .main .block-container div, .main .block-container p, .main .block-container h1, .main .block-container h2, .main .block-container h3 {
 #         color: white;
 #     }
-
 
 
 # Function to display a data table
