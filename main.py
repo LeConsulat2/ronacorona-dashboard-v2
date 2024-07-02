@@ -10,6 +10,34 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+# Embed custom CSS
+st.markdown(
+    """
+    <style>
+    /* Adjust the vh for the main container */
+    .main .block-container {
+        height: 90vh; /* Adjust this value as needed */
+        max-height:90vh;
+        width: 100vw; /* Adjust this value as needed */
+        max-width: 100vw /* Adjust this value as needed */
+        overflow-y: auto; /* Add scrolling if needed */
+        
+    }
+    /* Additional styles for the Streamlit app */
+    stApp {
+        margin: auto;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        overflow: auto;
+        background: linear-gradient(315deg, #4f2991 3%, #7dc4ff 38%, #36cfcc 68%, #a92ed3 98%);
+        animation: gradient 15s ease infinite;
+        background-size: 400% 400%;
+        background-attachment: fixed;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 
 # Function to display a data table
 def make_table(df):
@@ -20,7 +48,7 @@ def make_table(df):
 # Load data
 conditions = ["confirmed", "deaths", "recovered"]
 
-daily_df = pd.read_csv("Data/daily_report.csv")
+daily_df = pd.read_csv("data/daily_report.csv")
 
 totals_df = (
     daily_df[["Confirmed", "Deaths", "Recovered"]].sum().reset_index(name="count")
@@ -51,7 +79,7 @@ def make_country_df(country):
     final_df = None
 
     for condition in conditions:
-        df = pd.read_csv(f"Data/time_{condition}.csv")
+        df = pd.read_csv(f"data/time_{condition}.csv")
         df = df.rename(
             columns={"Country/Region": "Country_Region", "Lat": "Lat", "Long": "Long_"}
         )
@@ -77,7 +105,7 @@ def make_global_df():
     final_df = None
 
     for condition in conditions:
-        df = pd.read_csv(f"Data/time_{condition}.csv")
+        df = pd.read_csv(f"data/time_{condition}.csv")
         df = df.rename(
             columns={"Country/Region": "Country_Region", "Lat": "Lat", "Long": "Long_"}
         )
