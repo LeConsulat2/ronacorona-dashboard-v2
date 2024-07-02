@@ -11,8 +11,6 @@ st.set_page_config(
 )
 
 # Embed custom CSS
-import streamlit as st
-
 st.markdown(
     """
     <style>
@@ -24,8 +22,14 @@ st.markdown(
         max-width: 100vw; /* Adjust this value as needed */
         overflow-y: auto; /* Add scrolling if needed */
     }
+
+    /* Remove the header background */
+    .stApp > header {
+        background-color: transparent;
+    }
+
     /* Additional styles for the Streamlit app */
-    body {
+    .stApp {
         margin: auto;
         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         overflow: auto;
