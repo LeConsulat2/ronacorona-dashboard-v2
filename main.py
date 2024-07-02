@@ -11,43 +11,43 @@ st.set_page_config(
 )
 
 # Embed custom CSS
-st.markdown(
-    """
-    <style>
-    /* Adjust the vh for the main container */
-    .main .block-container {
-        height: 90vh; /* Adjust this value as needed */
-        max-height: 90vh;
-        width: 100vw; /* Adjust this value as needed */
-        max-width: 100vw; /* Adjust this value as needed */
-        overflow-y: auto; /* Add scrolling if needed */
-    }
+# st.markdown(
+#     """
+#     <style>
+#     /* Adjust the vh for the main container */
+#     .main .block-container {
+#         height: 90vh; /* Adjust this value as needed */
+#         max-height: 90vh;
+#         width: 100vw; /* Adjust this value as needed */
+#         max-width: 100vw; /* Adjust this value as needed */
+#         overflow-y: auto; /* Add scrolling if needed */
+#     }
 
-    /* Remove the header background */
-    .stApp > header {
-        background-color: #111111;
-    }
+#     /* Remove the header background */
+#     .stApp > header {
+#         background-color: #111111;
+#     }
 
-    /* Additional styles for the Streamlit app */
-    .stApp {
-        margin: auto;
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        overflow: auto;
-        background: #111111;
-        color: white; /* Set text color to white */
-        animation: gradient 15s ease infinite;
-        background-size: 400% 400%;
-        background-attachment: fixed;
-    }
+#     /* Additional styles for the Streamlit app */
+#     .stApp {
+#         margin: auto;
+#         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+#         overflow: auto;
+#         background: #111111;
+#         color: white; /* Set text color to white */
+#         animation: gradient 15s ease infinite;
+#         background-size: 400% 400%;
+#         background-attachment: fixed;
+#     }
 
-    /* Make sure the text inside other containers is also white */
-    .main .block-container, .main .block-container div, .main .block-container p, .main .block-container h1, .main .block-container h2, .main .block-container h3 {
-        color: white;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+#     /* Make sure the text inside other containers is also white */
+#     .main .block-container, .main .block-container div, .main .block-container p, .main .block-container h1, .main .block-container h2, .main .block-container h3 {
+#         color: white;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True,
+# )
 
 
 # Function to display a data table
