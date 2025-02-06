@@ -4,67 +4,11 @@ import plotly.express as px
 
 # Page configuration
 st.set_page_config(
-    page_title="Corona Dashboard",
-    page_icon="",
-    layout="wide",  # 'centered' or 'wide'
-    initial_sidebar_state="expanded",
+    page_title="Corona Dashboard",  # Title displayed in the browser tab
+    page_icon="",  # Page icon (if any)
+    layout="wide",  # Use a wide layout (alternatively, 'centered')
+    initial_sidebar_state="expanded",  # Sidebar is expanded by default
 )
-
-# Embed custom CSS to force dark theme
-# st.markdown(
-#     """
-#     <style>
-#     /* Adjust the vh for the main container */
-#     .main .block-container {
-#         height: 90vh; /* Adjust this value as needed */
-#         max-height: 90vh;
-#         width: 100vw; /* Adjust this value as needed */
-#         max-width: 100vw; /* Adjust this value as needed */
-#         overflow-y: auto; /* Add scrolling if needed */
-#     }
-
-#     /* Remove the header background */
-#     .stApp > header {
-#         background-color: #111111;
-#     }
-
-#     /* Additional styles for the Streamlit app */
-#     .stApp {
-#         margin: auto;
-#         font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-#         overflow: auto;
-#         background: #111111;
-#         color: white; /* Set text color to white */
-#         animation: gradient 15s ease infinite;
-#         background-size: 400% 400%;
-#         background-attachment: fixed;
-#     }
-
-#     /* Make sure the text inside other containers is also white */
-#     .main .block-container, .main .block-container div, .main .block-container p, .main .block-container h1, .main .block-container h2, .main .block-container h3, .main .block-container .stMarkdown, .main .block-container .stDataFrame {
-#         color: white;
-#     }
-
-#     /* Set background for dataframe elements */
-#     .stDataFrame, .stDataFrame table {
-#         background-color: #222222;
-#         color: white;
-#     }
-
-#     /* Style the dropdown */
-#     .stSelectbox {
-#         color: white;
-#         background-color: #333333;
-#     }
-
-#     /* Style the plotly graphs */
-#     .stPlotlyChart {
-#         background-color: #111111;
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True,
-# )
 
 
 # Function to display a data table
@@ -73,30 +17,46 @@ def make_table(df):
     st.dataframe(df)
 
 
-# Load data
+# Load the statuses we are tracking: confirmed, deaths, and recovered
+# Similar to a traffic light: red for confirmed, black for deaths, and green for recovered
 conditions = ["confirmed", "deaths", "recovered"]
 
+# Load the daily report data – think of it as today's dashboard snapshot
 daily_df = pd.read_csv("data/daily_report.csv")
 
+# Calculate global totals – a summary of the worldwide situation
+# Like the final tally in a bank ledger where all numbers are summed up
 totals_df = (
     daily_df[["Confirmed", "Deaths", "Recovered"]].sum().reset_index(name="count")
 )
 totals_df = totals_df.rename(columns={"index": "condition"})
 
+# Organize data by country
+# Similar to arranging report cards for each class, we summarize the situation per country
 countries_df = daily_df[["Country_Region", "Confirmed", "Deaths", "Recovered"]]
 countries_df = (
     countries_df.groupby("Country_Region")
     .sum()
-    .sort_values(by="Confirmed", ascending=False)
+    .sort_values(
+        by="Confirmed", ascending=False
+    )  # Sorted in descending order by confirmed cases
     .reset_index()
 )
 
+# Prepare a list of countries for the dropdown menu
+# Sorted in alphabetical order to make selection easier
 dropdown_options = countries_df.sort_values("Country_Region").reset_index()
 dropdown_options = dropdown_options["Country_Region"]
 
 
 def make_country_df(country):
+    """
+    Function to generate time series data for a specific country.
+    Much like tracking a student's daily performance, it monitors a country's daily changes.
+    """
+
     def make_df(df, condition):
+        # Remove unnecessary columns and compute the daily totals
         df = df.drop(
             ["Province/State", "Country/Region", "Lat", "Long"], axis=1, errors="ignore"
         )
@@ -106,6 +66,8 @@ def make_country_df(country):
 
     final_df = None
 
+    # Process data for confirmed, deaths, and recovered one at a time
+    # Like assembling pieces of a puzzle, we combine the three datasets into one
     for condition in conditions:
         df = pd.read_csv(f"data/time_{condition}.csv")
         df = df.rename(
@@ -122,7 +84,14 @@ def make_country_df(country):
 
 
 def make_global_df():
+    """
+    Function to generate global time series data.
+    Similar to examining the daily performance of an entire school,
+    this function provides an overview of the worldwide daily changes.
+    """
+
     def make_df(df, condition):
+        # Remove unnecessary columns and compute the daily totals
         df = df.drop(
             ["Province/State", "Country/Region", "Lat", "Long"], axis=1, errors="ignore"
         )
@@ -132,6 +101,8 @@ def make_global_df():
 
     final_df = None
 
+    # Aggregate confirmed, deaths, and recovered data globally
+    # Like compiling global weather forecasts, all data is consolidated here
     for condition in conditions:
         df = pd.read_csv(f"data/time_{condition}.csv")
         df = df.rename(
@@ -146,87 +117,88 @@ def make_global_df():
     return final_df
 
 
-# Title and header
+# Title and Header for the dashboard
 st.title("Corona Dashboard")
 
-# Create a layout with columns to align elements to the left
-col1, col2 = st.columns(
-    [3, 1]
-)  # The first column is three times the width of the second column
+# Create a two-column layout: the first column is 3 times wider than the second
+col1, col2 = st.columns([3, 1])
 
 with col1:
-    # Create bubble map figure
+    # Generate the bubble map figure
     bubble_map = px.scatter_geo(
         countries_df,
-        size="Confirmed",
+        size="Confirmed",  # Bubble size reflects confirmed cases
         projection="equirectangular",
-        hover_name="Country_Region",
-        color="Confirmed",
-        locations="Country_Region",
+        color="Confirmed",  # Bubble color reflects confirmed cases
+        locations="Country_Region",  # Map the country names to their locations
         locationmode="country names",
         size_max=60,
         title="Confirmed By Country",
         template="plotly_dark",
         color_continuous_scale=px.colors.sequential.Oryel,
         hover_data={
-            "Confirmed": ":,",
+            "COnfirmed": ":,",
             "Deaths": ":,",
             "Recovered": ":,",
             "Country_Region": False,
         },
     )
+
     bubble_map.update_layout(
         margin=dict(l=0, r=0, t=50, b=0), coloraxis_colorbar=dict(xanchor="left", x=0)
     )
 
-    # Display the bubble map
+    # Render the bubble map
     st.plotly_chart(bubble_map, use_container_width=True)
 
-with col2:
-    # Display the data table
-    make_table(countries_df)
+    with col2:
+        # Render the data table
+        make_table(countries_df)
 
-# Second row of elements
-col3, col4 = st.columns([1, 3])
+    # Second row: Create a new set of columns, with a 1:3 ratio
+    col3, col4 = st.columns([1, 3])
 
-with col3:
-    # Create bar graph figure
-    bars_graph = px.bar(
-        totals_df,
-        x="condition",
-        hover_data={"count": ":,"},
-        y="count",
-        template="plotly_dark",
-        title="Total Global Cases",
-        labels={"condition": "Condition", "count": "Count", "color": "Condition"},
-    )
-    bars_graph.update_traces(marker_color=["#e74c3c", "#8e44ad", "#27ae60"])
+    with col3:
+        # Generate the bar graph figure for global totals
+        bars_graph = px.bar(
+            totals_df,
+            x="condition",
+            hover_data={"count": ":,"},
+            y="count",
+            template="plotly_dark",
+            title="Total Global Cases",
+            labels={"condition": "Condition", "count": "Count", "color": "Condition"},
+        )
 
-    # Display the bar graph
-    st.plotly_chart(bars_graph, use_container_width=True)
+        bars_graph.update_traces(marker_color=["#e74c3c", "#8e44ad", "#27ae60"])
 
-with col4:
-    # Country selection dropdown
-    country = st.selectbox("Select a country:", options=dropdown_options)
+        # Render the bar graph
+        st.plotly_chart(bars_graph, use_container_width=True)
 
-    # Update country graph based on selection
-    if country:
-        df = make_country_df(country)
-    else:
-        df = make_global_df()
+    with col4:
+        # Dropdown menu for country selection
+        country = st.selectbox("Select a Country:", options=dropdown_options)
 
-    fig = px.line(
-        df,
-        x="date",
-        y=["confirmed", "deaths", "recovered"],
-        template="plotly_dark",
-        labels={"value": "Cases", "variable": "Condition", "date": "Date"},
-        hover_data={"value": ":,", "variable": False, "date": False},
-    )
-    fig.update_xaxes(rangeslider_visible=True)
-    fig["data"][0]["line"]["color"] = "#e74c3c"
-    fig["data"][1]["line"]["color"] = "#8e44ad"
-    fig["data"][2]["line"]["color"] = "#27ae60"
+        # Update the country graph based on the selected country
+        if country:
+            df = make_country_df(country)
+        else:
+            df = make_global_df()
 
-    # Display the line graph
-    st.plotly_chart(fig, use_container_width=True)
+        fig = px.line(
+            df,
+            x="date",
+            y=["confirmed", "deaths", "recovered"],
+            template="plotly_dark",
+            labels={"value": "Cases", "variable": "Condition", "date": "Date"},
+            hover_date={"value": ":,", "variable": False, "date": False},
+        )
+
+        fig.update_xaxes(rangeslider_visible=True)
+        # Set custom line colors for each status
+        fig["data"][0]["line"]["color"] = "#e74c3c"
+        fig["data"][1]["line"]["color"] = "#8e44ad"
+        fig["data"][2]["line"]["color"] = "#27ae60"
+
+        # Render the line graph
+        st.plotly_chart(fig, use_container_width=True)
