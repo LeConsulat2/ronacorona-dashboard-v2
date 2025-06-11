@@ -733,7 +733,7 @@ def create_quantum_dashboard(df):
         row=2, col=2
     )
     
-     fig.update_layout(
+    fig.update_layout(
         title=dict(
             text='🚀 QUANTUM NEURAL DASHBOARD',
             x=0.5,
