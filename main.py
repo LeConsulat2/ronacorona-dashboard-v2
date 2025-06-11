@@ -733,18 +733,18 @@ def create_quantum_dashboard(df):
         row=2, col=2
     )
     
-    fig.update_layout(
+     fig.update_layout(
         title=dict(
             text='🚀 QUANTUM NEURAL DASHBOARD',
             x=0.5,
-            font=dict(size=24, color='#00ff88', family='Orbitron'),
-            height=800,
+            font=dict(size=24, color='#00ff88', family='Orbitron')
+        ),
+        height=800,
         paper_bgcolor='rgba(0, 0, 0, 0)',
         plot_bgcolor='rgba(0, 0, 0, 0)',
         font=dict(color='#00ff88'),
         showlegend=True
     )
-    
     return fig
 
 # 🎮 REAL-TIME DATA PROCESSOR
