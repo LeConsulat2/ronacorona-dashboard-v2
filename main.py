@@ -7,8 +7,6 @@ import numpy as np
 from datetime import datetime, timedelta
 import time
 import json
-import os
-from pathlib import Path
 
 # 🚀 ULTRA ADVANCED PAGE CONFIG
 st.set_page_config(
@@ -353,36 +351,20 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
 });
 </script>
-
-# Load data from CSV files
-try:
-    # Get the directory of the current script
-    base_dir = Path(__file__).parent
-    data_dir = base_dir / 'data'
-    
-    # Load daily report data
-    daily_df = pd.read_csv(data_dir / 'daily_report.csv')
-    
-    # Load time series data
-    time_confirmed = pd.read_csv(data_dir / 'time_confirmed.csv')
-    time_deaths = pd.read_csv(data_dir / 'time_deaths.csv')
-    time_recovered = pd.read_csv(data_dir / 'time_recovered.csv')
-    
-    # For now, use the daily report as the main dataframe
-    df = daily_df.copy()
-    
-    # Add any additional processing needed for your visualizations
-    # For example, calculating rates, aggregating by country, etc.
-    
-    # Main app layout
-    st.markdown('<div class="cyber-header"><h1 class="cyber-title">🦠 COVID-19 NEURAL ANALYTICS HUB</h1><p class="cyber-subtitle">Real-time Pandemic Intelligence Dashboard</p></div>', unsafe_allow_html=True)
-    
-except Exception as e:
-    st.error(f"데이터를 로드하는 중 오류가 발생했습니다: {str(e)}")
-    st.stop()
+""", unsafe_allow_html=True)
 
 # 🚀 ADVANCED DATA SIMULATION
-@s# ... rest of your code ...
+@st.cache_data
+def generate_ultra_realistic_data():
+    """Generate ultra-realistic COVID data with advanced patterns"""
+    np.random.seed(42)
+    
+    countries = [
+        'United States', 'India', 'Brazil', 'Russia', 'France', 'United Kingdom',
+        'Turkey', 'Iran', 'Germany', 'Italy', 'Spain', 'Poland', 'Ukraine',
+        'South Africa', 'Mexico', 'Peru', 'Netherlands', 'Iraq', 'Japan', 'Czech Republic',
+        'Canada', 'Chile', 'Bangladesh', 'Belgium', 'Romania', 'Israel', 'Portugal',
+        'Indonesia', 'Philippines', 'Pakistan', 'Argentina', 'Hungary', 'Jordan',
         'Serbia', 'Switzerland', 'Austria', 'Lebanon', 'Morocco', 'Saudi Arabia',
         'Slovakia', 'Nepal', 'Ecuador', 'Bolivia', 'Croatia', 'Tunisia', 'Slovenia',
         'Lithuania', 'Guatemala', 'Cuba', 'Ghana'
@@ -755,13 +737,242 @@ def create_quantum_dashboard(df):
         title=dict(
             text='🚀 QUANTUM NEURAL DASHBOARD',
             x=0.5,
-            font=dict(size=24, color='#00ff88', family='Orbitron')
-        ),
+            font=dict(size=24, color='#00ff88', family='Orbitron'),
+            height=800,
         paper_bgcolor='rgba(0, 0, 0, 0)',
         plot_bgcolor='rgba(0, 0, 0, 0)',
         font=dict(color='#00ff88'),
-        height=600
+        showlegend=True
     )
     
     return fig
 
+# 🎮 REAL-TIME DATA PROCESSOR
+@st.cache_data
+def load_real_covid_data():
+    """Load and process real COVID data from CSV files"""
+    try:
+        # Load the actual data files
+        daily_df = pd.read_csv("data/daily_report.csv")
+        
+        # Process and aggregate by country
+        countries_df = daily_df[["Country_Region", "Confirmed", "Deaths", "Recovered"]].copy()
+        countries_df = (
+            countries_df.groupby("Country_Region")
+            .sum()
+            .sort_values(by="Confirmed", ascending=False)
+            .reset_index()
+        )
+        
+        # Add calculated metrics
+        countries_df['Death_Rate'] = (countries_df['Deaths'] / countries_df['Confirmed'] * 100).round(2)
+        countries_df['Recovery_Rate'] = (countries_df['Recovered'] / countries_df['Confirmed'] * 100).round(2)
+        countries_df['Active_Cases'] = countries_df['Confirmed'] - countries_df['Deaths'] - countries_df['Recovered']
+        
+        # Add geographical coordinates (sample coordinates for visualization)
+        np.random.seed(42)
+        countries_df['Lat'] = np.random.uniform(-60, 70, len(countries_df))
+        countries_df['Long'] = np.random.uniform(-170, 170, len(countries_df))
+        
+        # Calculate severity index based on real metrics
+        countries_df['Severity_Index'] = (
+            countries_df['Death_Rate'] * 0.5 + 
+            (countries_df['Active_Cases'] / countries_df['Confirmed'] * 100) * 0.3 +
+            (countries_df['Confirmed'] / countries_df['Confirmed'].max() * 100) * 0.2
+        ).round(2)
+        
+        return countries_df, daily_df
+        
+    except FileNotFoundError:
+        st.error("⚠️ COVID data files not found. Please ensure data/daily_report.csv exists.")
+        return None, None
+
+def load_time_series_data(country_name=None):
+    """Load time series data for specific country or global"""
+    try:
+        conditions = ["confirmed", "deaths", "recovered"]
+        final_df = None
+        
+        for condition in conditions:
+            df = pd.read_csv(f"data/time_{condition}.csv")
+            df = df.rename(columns={"Country/Region": "Country_Region"})
+            
+            if country_name:
+                df = df.loc[df["Country_Region"] == country_name]
+            
+            # Drop non-date columns and sum by date
+            date_cols = df.columns[4:]  # Skip Province/State, Country/Region, Lat, Long
+            df_processed = df[date_cols].sum().reset_index()
+            df_processed.columns = ['date', condition]
+            df_processed['date'] = pd.to_datetime(df_processed['date'])
+            
+            if final_df is None:
+                final_df = df_processed
+            else:
+                final_df = final_df.merge(df_processed, on='date')
+        
+        return final_df.sort_values('date')
+        
+    except FileNotFoundError:
+        st.error("⚠️ Time series data files not found.")
+        return None
+
+# 🌟 MAIN DASHBOARD EXECUTION
+def main():
+    # Cyberpunk Header
+    st.markdown("""
+    <div class="cyber-header">
+        <h1 class="cyber-title">🦠 COVID-19 NEURAL ANALYTICS HUB</h1>
+        <p class="cyber-subtitle">Advanced Pandemic Intelligence • Real-Time Global Monitoring</p>
+        <div class="sound-wave">
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+            <div class="wave-bar"></div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Load real data
+    countries_df, daily_df = load_real_covid_data()
+    
+    if countries_df is None:
+        st.stop()
+    
+    # Display holographic metrics
+    display_holographic_metrics(countries_df)
+    
+    # AI Insights Panel
+    insights = generate_ai_insights(countries_df)
+    st.markdown('<div class="glass-container">', unsafe_allow_html=True)
+    st.markdown("### 🤖 AI-POWERED PANDEMIC INSIGHTS")
+    for insight in insights:
+        st.markdown(f'<div class="ai-insight">{insight}</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Advanced Tabbed Interface
+    tab1, tab2, tab3, tab4 = st.tabs(["🌍 GLOBAL MAP", "📊 ANALYTICS", "🎯 COMPARISONS", "⚡ REAL-TIME"])
+    
+    with tab1:
+        st.markdown('<div class="glass-container">', unsafe_allow_html=True)
+        col1, col2 = st.columns([2, 1])
+        
+        with col1:
+            # 3D Globe Visualization
+            globe_fig = create_3d_globe_visualization(countries_df)
+            st.plotly_chart(globe_fig, use_container_width=True, className="plotly-chart")
+        
+        with col2:
+            st.markdown("### 🏆 TOP AFFECTED REGIONS")
+            top_10 = countries_df.head(10)
+            for idx, (_, country) in enumerate(top_10.iterrows()):
+                st.markdown(f"""
+                <div style="background: linear-gradient(90deg, rgba(255,0,128,0.1), rgba(0,255,136,0.1)); 
+                           padding: 0.8rem; margin: 0.3rem 0; border-radius: 10px; border-left: 4px solid #00ff88;">
+                    <strong>{idx+1}. {country['Country_Region']}</strong><br>
+                    <small>Cases: {country['Confirmed']:,} | Deaths: {country['Deaths']:,} | 
+                    Severity: {country['Severity_Index']:.1f}</small>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with tab2:
+        st.markdown('<div class="glass-container">', unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Quantum Dashboard
+            quantum_fig = create_quantum_dashboard(countries_df)
+            st.plotly_chart(quantum_fig, use_container_width=True)
+        
+        with col2:
+            # Correlation Heatmap
+            heatmap_fig = create_correlation_heatmap(countries_df)
+            st.plotly_chart(heatmap_fig, use_container_width=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with tab3:
+        st.markdown('<div class="glass-container">', unsafe_allow_html=True)
+        # Radar Comparison
+        radar_fig = create_radar_comparison(countries_df)
+        st.plotly_chart(radar_fig, use_container_width=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with tab4:
+        st.markdown('<div class="glass-container">', unsafe_allow_html=True)
+        
+        # Country selector for time series
+        selected_country = st.selectbox(
+            "🌍 Select Country for Time Analysis:",
+            options=["Global"] + countries_df['Country_Region'].tolist(),
+            key="country_selector"
+        )
+        
+        # Load and display time series
+        if selected_country == "Global":
+            time_df = load_time_series_data()
+        else:
+            time_df = load_time_series_data(selected_country)
+        
+        if time_df is not None:
+            # Advanced time series visualization
+            fig = go.Figure()
+            
+            colors = {'confirmed': '#00ff88', 'deaths': '#ff0080', 'recovered': '#0080ff'}
+            
+            for condition in ['confirmed', 'deaths', 'recovered']:
+                fig.add_trace(go.Scatter(
+                    x=time_df['date'],
+                    y=time_df[condition],
+                    mode='lines+markers',
+                    name=condition.title(),
+                    line=dict(color=colors[condition], width=3),
+                    marker=dict(size=6),
+                    hovertemplate=f'<b>{condition.title()}</b><br>Date: %{{x}}<br>Count: %{{y:,}}<extra></extra>'
+                ))
+            
+            fig.update_layout(
+                title=dict(
+                    text=f'📈 {selected_country} - TEMPORAL EVOLUTION MATRIX',
+                    x=0.5,
+                    font=dict(size=20, color='#00ff88', family='Orbitron')
+                ),
+                xaxis=dict(
+                    title='Timeline',
+                    gridcolor='rgba(0, 255, 136, 0.2)',
+                    tickcolor='#00ff88',
+                    rangeslider=dict(visible=True)
+                ),
+                yaxis=dict(
+                    title='Case Count',
+                    gridcolor='rgba(0, 255, 136, 0.2)',
+                    tickcolor='#00ff88'
+                ),
+                paper_bgcolor='rgba(0, 0, 0, 0)',
+                plot_bgcolor='rgba(0, 0, 0, 0.1)',
+                font=dict(color='#00ff88'),
+                height=500
+            )
+            
+            st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Footer with neural effect
+    st.markdown("""
+    <div style="text-align: center; padding: 2rem; margin-top: 3rem; 
+                background: linear-gradient(45deg, rgba(0,255,136,0.1), rgba(255,0,128,0.1));
+                border-radius: 15px;">
+        <p style="color: #00ff88; font-family: 'Orbitron', monospace;">
+            🧬 Powered by Neural Analytics Engine • Real-time Global Intelligence
+        </p>
+        <div class="loading-spinner"></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# 🚀 LAUNCH SEQUENCE
+if __name__ == "__main__":
+    main()
