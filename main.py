@@ -7,6 +7,8 @@ import numpy as np
 from datetime import datetime, timedelta
 import time
 import json
+import os
+from pathlib import Path
 
 # 🚀 ULTRA ADVANCED PAGE CONFIG
 st.set_page_config(
@@ -351,20 +353,36 @@ window.addEventListener('resize', () => {
     canvas.height = window.innerHeight;
 });
 </script>
-""", unsafe_allow_html=True)
+
+# Load data from CSV files
+try:
+    # Get the directory of the current script
+    base_dir = Path(__file__).parent
+    data_dir = base_dir / 'data'
+    
+    # Load daily report data
+    daily_df = pd.read_csv(data_dir / 'daily_report.csv')
+    
+    # Load time series data
+    time_confirmed = pd.read_csv(data_dir / 'time_confirmed.csv')
+    time_deaths = pd.read_csv(data_dir / 'time_deaths.csv')
+    time_recovered = pd.read_csv(data_dir / 'time_recovered.csv')
+    
+    # For now, use the daily report as the main dataframe
+    df = daily_df.copy()
+    
+    # Add any additional processing needed for your visualizations
+    # For example, calculating rates, aggregating by country, etc.
+    
+    # Main app layout
+    st.markdown('<div class="cyber-header"><h1 class="cyber-title">🦠 COVID-19 NEURAL ANALYTICS HUB</h1><p class="cyber-subtitle">Real-time Pandemic Intelligence Dashboard</p></div>', unsafe_allow_html=True)
+    
+except Exception as e:
+    st.error(f"데이터를 로드하는 중 오류가 발생했습니다: {str(e)}")
+    st.stop()
 
 # 🚀 ADVANCED DATA SIMULATION
-@st.cache_data
-def generate_ultra_realistic_data():
-    """Generate ultra-realistic COVID data with advanced patterns"""
-    np.random.seed(42)
-    
-    countries = [
-        'United States', 'India', 'Brazil', 'Russia', 'France', 'United Kingdom',
-        'Turkey', 'Iran', 'Germany', 'Italy', 'Spain', 'Poland', 'Ukraine',
-        'South Africa', 'Mexico', 'Peru', 'Netherlands', 'Iraq', 'Japan', 'Czech Republic',
-        'Canada', 'Chile', 'Bangladesh', 'Belgium', 'Romania', 'Israel', 'Portugal',
-        'Indonesia', 'Philippines', 'Pakistan', 'Argentina', 'Hungary', 'Jordan',
+@s# ... rest of your code ...
         'Serbia', 'Switzerland', 'Austria', 'Lebanon', 'Morocco', 'Saudi Arabia',
         'Slovakia', 'Nepal', 'Ecuador', 'Bolivia', 'Croatia', 'Tunisia', 'Slovenia',
         'Lithuania', 'Guatemala', 'Cuba', 'Ghana'
@@ -747,4 +765,3 @@ def create_quantum_dashboard(df):
     
     return fig
 
-    
