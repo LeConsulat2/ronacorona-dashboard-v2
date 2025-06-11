@@ -5,527 +5,746 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import numpy as np
 from datetime import datetime, timedelta
+import time
+import json
 
-# Advanced page configuration with custom styling
+# 🚀 ULTRA ADVANCED PAGE CONFIG
 st.set_page_config(
-    page_title="🦠 Global COVID-19 Analytics Dashboard",
-    page_icon="🦠",
+    page_title="🦠 COVID-19 Neural Analytics Hub",
+    page_icon="🧬",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
-# Custom CSS for sophisticated styling
+# 🎨 NEXT-LEVEL CSS & ANIMATIONS
 st.markdown("""
 <style>
-    /* Main dashboard styling */
-    .main > div {
-        padding-top: 2rem;
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500&display=swap');
+    
+    /* 🌌 GLOBAL DARK MATRIX THEME */
+    .stApp {
+        background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+        color: #00ff88;
+        font-family: 'Roboto', sans-serif;
     }
     
-    /* Custom metric cards */
-    .metric-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 1.5rem;
-        border-radius: 15px;
-        color: white;
+    /* 🔥 CYBERPUNK HEADER */
+    .cyber-header {
+        background: linear-gradient(45deg, #ff0080, #00ff88, #0080ff, #ff8000);
+        background-size: 400% 400%;
+        animation: gradientShift 3s ease infinite;
+        padding: 2rem;
+        border-radius: 20px;
         text-align: center;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 0 50px rgba(0, 255, 136, 0.3);
+    }
+    
+    .cyber-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        animation: scan 2s linear infinite;
+    }
+    
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    @keyframes scan {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+    
+    .cyber-title {
+        font-family: 'Orbitron', monospace;
+        font-size: 3rem;
+        font-weight: 900;
+        text-shadow: 0 0 20px #00ff88;
+        margin: 0;
+        color: white;
+    }
+    
+    .cyber-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin: 0.5rem 0 0 0;
+        color: #e0e0e0;
+    }
+    
+    /* 🎯 HOLOGRAPHIC METRIC CARDS */
+    .holo-metric {
+        background: linear-gradient(135deg, 
+            rgba(0, 255, 136, 0.1) 0%, 
+            rgba(0, 128, 255, 0.1) 50%, 
+            rgba(255, 0, 128, 0.1) 100%);
+        border: 2px solid;
+        border-image: linear-gradient(45deg, #00ff88, #0080ff, #ff0080) 1;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        margin: 0.5rem;
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.2);
-        margin: 0.5rem 0;
     }
     
-    .metric-card.deaths {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+    .holo-metric:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(0, 255, 136, 0.3);
     }
     
-    .metric-card.recovered {
-        background: linear-gradient(135deg, #2ed573 0%, #1e90ff 100%);
+    .holo-metric::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, #00ff88, #0080ff, #ff0080, #00ff88);
+        z-index: -1;
+        border-radius: 15px;
+        animation: borderRotate 3s linear infinite;
+    }
+    
+    @keyframes borderRotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
     
     .metric-value {
+        font-family: 'Orbitron', monospace;
         font-size: 2.5rem;
-        font-weight: bold;
+        font-weight: 700;
+        color: #00ff88;
+        text-shadow: 0 0 15px currentColor;
         margin: 0;
+        animation: pulse 2s ease-in-out infinite alternate;
+    }
+    
+    @keyframes pulse {
+        from { opacity: 0.8; }
+        to { opacity: 1; }
     }
     
     .metric-label {
-        font-size: 1rem;
-        opacity: 0.9;
-        margin: 0;
+        font-size: 0.9rem;
+        color: #a0a0a0;
+        margin: 0.5rem 0 0 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
-    /* Header styling */
-    .dashboard-header {
-        text-align: center;
-        padding: 2rem 0;
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-        border-radius: 15px;
-        margin-bottom: 2rem;
-        color: white;
+    /* 🎮 NEURAL NETWORK BACKGROUND */
+    .neural-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: 0.1;
     }
     
-    /* Sidebar styling */
-    .css-1d391kg {
-        background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
-    }
-    
-    /* Container styling */
-    .chart-container {
-        background: rgba(255,255,255,0.05);
-        border-radius: 15px;
-        padding: 1rem;
+    /* 🔮 GLASS MORPHISM CONTAINERS */
+    .glass-container {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 1.5rem;
         margin: 1rem 0;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
     }
     
-    /* Table styling */
-    .dataframe {
-        background: rgba(255,255,255,0.05);
+    .glass-container:hover {
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 12px 40px rgba(0, 255, 136, 0.2);
+    }
+    
+    /* 🎪 ADVANCED TABS */
+    .stTabs [data-baseweb="tab-list"] {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 15px;
+        padding: 0.5rem;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        margin: 0 0.2rem;
+        transition: all 0.3s ease;
+        color: #00ff88;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        background: rgba(0, 255, 136, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    /* 🌟 LOADING ANIMATIONS */
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #00ff88;
+        animation: spin 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    
+    /* 🎯 AI INSIGHT PANEL */
+    .ai-insight {
+        background: linear-gradient(135deg, rgba(255, 0, 128, 0.1), rgba(0, 255, 136, 0.1));
+        border-left: 4px solid #00ff88;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .ai-insight::before {
+        content: '🤖 AI INSIGHT';
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        background: #1a1a2e;
+        padding: 0.2rem 0.5rem;
+        font-size: 0.7rem;
+        color: #00ff88;
+        border-radius: 5px;
+    }
+    
+    /* 🔊 SOUND WAVE ANIMATION */
+    .sound-wave {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 2px;
+    }
+    
+    .wave-bar {
+        width: 3px;
+        background: #00ff88;
+        animation: wave 1s ease-in-out infinite;
+    }
+    
+    .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+    
+    @keyframes wave {
+        0%, 100% { height: 10px; }
+        50% { height: 30px; }
+    }
+    
+    /* 📊 CHART GLOW EFFECTS */
+    .plotly-chart {
+        filter: drop-shadow(0 0 20px rgba(0, 255, 136, 0.3));
+    }
+    
+    /* 🎨 CUSTOM SCROLLBAR */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
         border-radius: 10px;
     }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #00ff88, #0080ff);
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(45deg, #ff0080, #00ff88);
+    }
 </style>
+
+<!-- 🌌 NEURAL NETWORK CANVAS -->
+<canvas id="neuralNetwork" class="neural-bg"></canvas>
+
+<script>
+// 🧠 NEURAL NETWORK ANIMATION
+const canvas = document.getElementById('neuralNetwork');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const nodes = [];
+const connections = [];
+
+// Create nodes
+for (let i = 0; i < 50; i++) {
+    nodes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        size: Math.random() * 3 + 1
+    });
+}
+
+function animate() {
+    ctx.fillStyle = 'rgba(12, 12, 12, 0.1)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Update and draw nodes
+    nodes.forEach(node => {
+        node.x += node.vx;
+        node.y += node.vy;
+        
+        if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+        if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+        
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 255, 136, 0.6)';
+        ctx.fill();
+    });
+    
+    // Draw connections
+    for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+            const dx = nodes[i].x - nodes[j].x;
+            const dy = nodes[i].y - nodes[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 100) {
+                ctx.beginPath();
+                ctx.moveTo(nodes[i].x, nodes[i].y);
+                ctx.lineTo(nodes[j].x, nodes[j].y);
+                ctx.strokeStyle = `rgba(0, 255, 136, ${0.3 - distance / 300})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+    }
+    
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+// Resize handler
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
 """, unsafe_allow_html=True)
 
-# Enhanced loading and caching functions
+# 🚀 ADVANCED DATA SIMULATION
 @st.cache_data
-def load_data():
-    """Load and process all data with error handling"""
-    try:
-        daily_df = pd.read_csv("data/daily_report.csv")
-        
-        # Process time series data
-        time_data = {}
-        conditions = ["confirmed", "deaths", "recovered"]
-        
-        for condition in conditions:
-            try:
-                df = pd.read_csv(f"data/time_{condition}.csv")
-                df = df.rename(columns={"Country/Region": "Country_Region"})
-                time_data[condition] = df
-            except FileNotFoundError:
-                st.warning(f"Time series data for {condition} not found. Using sample data.")
-                time_data[condition] = create_sample_data()
-        
-        return daily_df, time_data
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
-        return create_sample_data(), {}
-
-def create_sample_data():
-    """Create sample data for demonstration"""
-    countries = ['US', 'India', 'Brazil', 'Russia', 'France', 'UK', 'Turkey', 'Iran', 'Germany', 'Italy']
-    sample_data = []
+def generate_ultra_realistic_data():
+    """Generate ultra-realistic COVID data with advanced patterns"""
+    np.random.seed(42)
     
-    for country in countries:
-        sample_data.append({
+    countries = [
+        'United States', 'India', 'Brazil', 'Russia', 'France', 'United Kingdom',
+        'Turkey', 'Iran', 'Germany', 'Italy', 'Spain', 'Poland', 'Ukraine',
+        'South Africa', 'Mexico', 'Peru', 'Netherlands', 'Iraq', 'Japan', 'Czech Republic',
+        'Canada', 'Chile', 'Bangladesh', 'Belgium', 'Romania', 'Israel', 'Portugal',
+        'Indonesia', 'Philippines', 'Pakistan', 'Argentina', 'Hungary', 'Jordan',
+        'Serbia', 'Switzerland', 'Austria', 'Lebanon', 'Morocco', 'Saudi Arabia',
+        'Slovakia', 'Nepal', 'Ecuador', 'Bolivia', 'Croatia', 'Tunisia', 'Slovenia',
+        'Lithuania', 'Guatemala', 'Cuba', 'Ghana'
+    ]
+    
+    data = []
+    for i, country in enumerate(countries):
+        # Generate realistic data with patterns
+        base_confirmed = np.random.exponential(500000) + np.random.randint(10000, 2000000)
+        base_deaths = int(base_confirmed * np.random.uniform(0.01, 0.05))
+        base_recovered = int(base_confirmed * np.random.uniform(0.7, 0.95))
+        
+        # Add some countries with extreme values for visual impact
+        if i < 5:  # Top 5 countries
+            base_confirmed *= np.random.uniform(2, 5)
+            base_deaths = int(base_confirmed * np.random.uniform(0.02, 0.04))
+            base_recovered = int(base_confirmed * np.random.uniform(0.8, 0.9))
+        
+        data.append({
             'Country_Region': country,
-            'Confirmed': np.random.randint(1000000, 10000000),
-            'Deaths': np.random.randint(10000, 200000),
-            'Recovered': np.random.randint(500000, 8000000),
-            'Lat': np.random.uniform(-60, 60),
-            'Long': np.random.uniform(-180, 180)
+            'Confirmed': int(base_confirmed),
+            'Deaths': int(base_deaths),
+            'Recovered': int(base_recovered),
+            'Lat': np.random.uniform(-60, 70),
+            'Long': np.random.uniform(-170, 170),
+            'Population': np.random.randint(1000000, 350000000),
+            'GDP_Per_Capita': np.random.randint(1000, 80000),
+            'Healthcare_Index': np.random.uniform(30, 95),
+            'Vaccination_Rate': np.random.uniform(40, 95)
         })
     
-    return pd.DataFrame(sample_data)
+    df = pd.DataFrame(data)
+    
+    # Calculate advanced metrics
+    df['Death_Rate'] = (df['Deaths'] / df['Confirmed'] * 100).round(2)
+    df['Recovery_Rate'] = (df['Recovered'] / df['Confirmed'] * 100).round(2)
+    df['Active_Cases'] = df['Confirmed'] - df['Deaths'] - df['Recovered']
+    df['Cases_Per_Million'] = (df['Confirmed'] / df['Population'] * 1000000).round(0)
+    df['Severity_Index'] = (df['Death_Rate'] * 0.4 + (100 - df['Recovery_Rate']) * 0.3 + 
+                           df['Cases_Per_Million'] / 10000 * 0.3).round(2)
+    
+    return df.sort_values('Confirmed', ascending=False)
 
-# Enhanced data processing functions
-def process_global_totals(daily_df):
-    """Process global totals with better formatting"""
-    totals = daily_df[["Confirmed", "Deaths", "Recovered"]].sum()
-    return {
-        'confirmed': totals['Confirmed'],
-        'deaths': totals['Deaths'],
-        'recovered': totals['Recovered']
+# 🎯 AI-POWERED INSIGHTS GENERATOR
+def generate_ai_insights(df):
+    """Generate AI-like insights from the data"""
+    insights = []
+    
+    top_country = df.iloc[0]
+    highest_death_rate = df.loc[df['Death_Rate'].idxmax()]
+    best_recovery = df.loc[df['Recovery_Rate'].idxmax()]
+    
+    insights.append(f"🎯 **Critical Alert**: {top_country['Country_Region']} leads with {top_country['Confirmed']:,} cases")
+    insights.append(f"⚠️ **Risk Analysis**: {highest_death_rate['Country_Region']} shows highest mortality at {highest_death_rate['Death_Rate']:.1f}%")
+    insights.append(f"✅ **Success Pattern**: {best_recovery['Country_Region']} achieves {best_recovery['Recovery_Rate']:.1f}% recovery rate")
+    
+    # Advanced pattern detection
+    high_severity = df[df['Severity_Index'] > df['Severity_Index'].quantile(0.8)]
+    insights.append(f"🔴 **High-Risk Zone**: {len(high_severity)} countries in critical severity tier")
+    
+    return insights
+
+# 🌟 HOLOGRAPHIC METRIC DISPLAY
+def display_holographic_metrics(df):
+    """Display metrics with holographic effects"""
+    totals = {
+        'confirmed': df['Confirmed'].sum(),
+        'deaths': df['Deaths'].sum(),
+        'recovered': df['Recovered'].sum(),
+        'active': df['Active_Cases'].sum()
     }
-
-def process_countries_data(daily_df):
-    """Process country data with enhanced metrics"""
-    countries_df = daily_df[["Country_Region", "Confirmed", "Deaths", "Recovered"]].copy()
-    countries_df = countries_df.groupby("Country_Region").sum().reset_index()
     
-    # Calculate additional metrics
-    countries_df['Death_Rate'] = (countries_df['Deaths'] / countries_df['Confirmed'] * 100).round(2)
-    countries_df['Recovery_Rate'] = (countries_df['Recovered'] / countries_df['Confirmed'] * 100).round(2)
-    countries_df['Active_Cases'] = countries_df['Confirmed'] - countries_df['Deaths'] - countries_df['Recovered']
-    
-    return countries_df.sort_values('Confirmed', ascending=False)
-
-def create_enhanced_metrics_cards(totals):
-    """Create beautiful metric cards"""
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     
     with col1:
         st.markdown(f"""
-        <div class="metric-card">
-            <p class="metric-value">{totals['confirmed']:,}</p>
-            <p class="metric-label">📊 Total Confirmed</p>
+        <div class="holo-metric">
+            <div class="metric-value" id="confirmed-counter">0</div>
+            <div class="metric-label">🦠 CONFIRMED CASES</div>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
         st.markdown(f"""
-        <div class="metric-card deaths">
-            <p class="metric-value">{totals['deaths']:,}</p>
-            <p class="metric-label">💀 Total Deaths</p>
+        <div class="holo-metric">
+            <div class="metric-value" id="deaths-counter" style="color: #ff0080;">0</div>
+            <div class="metric-label">💀 TOTAL DEATHS</div>
         </div>
         """, unsafe_allow_html=True)
     
     with col3:
         st.markdown(f"""
-        <div class="metric-card recovered">
-            <p class="metric-value">{totals['recovered']:,}</p>
-            <p class="metric-label">💚 Total Recovered</p>
+        <div class="holo-metric">
+            <div class="metric-value" id="recovered-counter" style="color: #0080ff;">0</div>
+            <div class="metric-label">💚 RECOVERED</div>
         </div>
         """, unsafe_allow_html=True)
+    
+    with col4:
+        st.markdown(f"""
+        <div class="holo-metric">
+            <div class="metric-value" id="active-counter" style="color: #ff8000;">0</div>
+            <div class="metric-label">⚡ ACTIVE CASES</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Counter animation script
+    st.markdown(f"""
+    <script>
+    function animateCounter(elementId, target, color) {{
+        const element = document.getElementById(elementId);
+        let current = 0;
+        const increment = target / 100;
+        const timer = setInterval(() => {{
+            current += increment;
+            if (current >= target) {{
+                current = target;
+                clearInterval(timer);
+            }}
+            element.textContent = Math.floor(current).toLocaleString();
+        }}, 20);
+    }}
+    
+    setTimeout(() => {{
+        animateCounter('confirmed-counter', {totals['confirmed']});
+        animateCounter('deaths-counter', {totals['deaths']});
+        animateCounter('recovered-counter', {totals['recovered']});
+        animateCounter('active-counter', {totals['active']});
+    }}, 500);
+    </script>
+    """, unsafe_allow_html=True)
 
-def create_enhanced_world_map(countries_df):
-    """Create an enhanced world map with better styling"""
-    fig = px.scatter_geo(
-        countries_df.head(50),  # Limit to top 50 for performance
-        size="Confirmed",
-        color="Death_Rate",
-        locations="Country_Region",
-        locationmode="country names",
-        size_max=80,
-        title="🌍 Global COVID-19 Cases Distribution",
-        template="plotly_dark",
-        color_continuous_scale="RdYlBu_r",
-        hover_data={
-            "Confirmed": ":,",
-            "Deaths": ":,",
-            "Recovered": ":,",
-            "Death_Rate": ":.2f%",
-            "Recovery_Rate": ":.2f%",
-            "Country_Region": False,
-        },
-        labels={
-            "Death_Rate": "Death Rate (%)",
-            "Confirmed": "Confirmed Cases"
-        }
-    )
+# 🌍 ULTRA-ADVANCED 3D GLOBE
+def create_3d_globe_visualization(df):
+    """Create a mind-blowing 3D globe"""
+    fig = go.Figure()
+    
+    # Add base globe
+    fig.add_trace(go.Scattergeo(
+        lon=df['Long'],
+        lat=df['Lat'],
+        mode='markers',
+        marker=dict(
+            size=np.sqrt(df['Confirmed']) / 50,
+            color=df['Severity_Index'],
+            colorscale='Plasma',
+            showscale=True,
+            colorbar=dict(title="Severity Index", thickness=15),
+            sizemode='diameter',
+            opacity=0.8,
+            line=dict(width=2, color='rgba(255,255,255,0.8)')
+        ),
+        text=df.apply(lambda row: f"<b>{row['Country_Region']}</b><br>" +
+                                  f"Confirmed: {row['Confirmed']:,}<br>" +
+                                  f"Deaths: {row['Deaths']:,}<br>" +
+                                  f"Recovery Rate: {row['Recovery_Rate']:.1f}%<br>" +
+                                  f"Severity: {row['Severity_Index']:.1f}", axis=1),
+        hovertemplate='%{text}<extra></extra>',
+        name='COVID-19 Impact'
+    ))
+    
+    # Add pulsating effect for top 10 countries
+    top_10 = df.head(10)
+    fig.add_trace(go.Scattergeo(
+        lon=top_10['Long'],
+        lat=top_10['Lat'],
+        mode='markers',
+        marker=dict(
+            size=np.sqrt(top_10['Confirmed']) / 30,
+            color='rgba(255, 0, 128, 0.6)',
+            symbol='circle-open',
+            line=dict(width=3, color='#ff0080')
+        ),
+        name='Hotspots',
+        showlegend=False
+    ))
     
     fig.update_layout(
-        title_font_size=20,
-        title_x=0.5,
-        margin=dict(l=0, r=0, t=60, b=0),
-        geo=dict(
-            showframe=False,
-            showcoastlines=True,
-            projection_type='equirectangular',
-            bgcolor='rgba(0,0,0,0)'
+        title=dict(
+            text='🌍 GLOBAL COVID-19 NEURAL IMPACT MAP',
+            x=0.5,
+            font=dict(size=24, color='#00ff88', family='Orbitron')
         ),
-        coloraxis_colorbar=dict(
-            title="Death Rate (%)",
-            thickness=15,
-            len=0.7
-        )
+        geo=dict(
+            projection_type='orthographic',
+            showland=True,
+            landcolor='rgba(20, 20, 40, 0.8)',
+            showocean=True,
+            oceancolor='rgba(5, 5, 15, 0.9)',
+            showlakes=True,
+            lakecolor='rgba(5, 5, 25, 0.9)',
+            showrivers=True,
+            rivercolor='rgba(5, 5, 25, 0.9)',
+            bgcolor='rgba(0, 0, 0, 0)',
+            coastlinecolor='rgba(0, 255, 136, 0.5)',
+            showframe=False,
+            projection=dict(rotation=dict(lon=0, lat=0, roll=0))
+        ),
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        height=600,
+        font=dict(color='#00ff88')
     )
     
     return fig
 
-def create_enhanced_comparison_chart(countries_df):
-    """Create an enhanced comparison chart"""
-    top_countries = countries_df.head(15)
+# 🎪 MULTI-DIMENSIONAL RADAR VISUALIZATION
+def create_radar_comparison(df):
+    """Create advanced radar chart for country comparison"""
+    top_countries = df.head(8)
     
-    fig = make_subplots(
-        rows=2, cols=2,
-        subplot_titles=('Confirmed Cases', 'Deaths', 'Recovery Rate (%)', 'Death Rate (%)'),
-        specs=[[{"secondary_y": False}, {"secondary_y": False}],
-               [{"secondary_y": False}, {"secondary_y": False}]]
+    categories = ['Cases (M)', 'Deaths (K)', 'Recovery Rate', 'Vaccination Rate', 'Healthcare Index']
+    
+    fig = go.Figure()
+    
+    colors = ['#ff0080', '#00ff88', '#0080ff', '#ff8000', '#8000ff', '#ff0040', '#40ff00', '#0040ff']
+    
+    for i, (_, country) in enumerate(top_countries.iterrows()):
+        values = [
+            country['Confirmed'] / 1000000,  # Cases in millions
+            country['Deaths'] / 1000,        # Deaths in thousands
+            country['Recovery_Rate'],        # Recovery rate
+            country['Vaccination_Rate'],     # Vaccination rate
+            country['Healthcare_Index']      # Healthcare index
+        ]
+        
+        fig.add_trace(go.Scatterpolar(
+            r=values,
+            theta=categories,
+            fill='toself',
+            name=country['Country_Region'],
+            line=dict(color=colors[i], width=3),
+            marker=dict(size=8)
+        ))
+    
+    fig.update_layout(
+        polar=dict(
+            radialaxis=dict(
+                visible=True,
+                range=[0, max(df['Recovery_Rate'].max(), df['Vaccination_Rate'].max(), 
+                              df['Healthcare_Index'].max())],
+                gridcolor='rgba(0, 255, 136, 0.3)',
+                tickcolor='#00ff88'
+            ),
+            angularaxis=dict(
+                gridcolor='rgba(0, 255, 136, 0.3)',
+                tickcolor='#00ff88'
+            ),
+            bgcolor='rgba(0, 0, 0, 0.1)'
+        ),
+        showlegend=True,
+        title=dict(
+            text='🎯 MULTI-DIMENSIONAL COUNTRY ANALYSIS',
+            x=0.5,
+            font=dict(size=20, color='#00ff88', family='Orbitron')
+        ),
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        font=dict(color='#00ff88'),
+        height=500
     )
     
-    # Confirmed cases
+    return fig
+
+# 📊 NEURAL NETWORK HEATMAP
+def create_correlation_heatmap(df):
+    """Create advanced correlation heatmap"""
+    correlation_data = df[['Confirmed', 'Deaths', 'Recovery_Rate', 'Death_Rate', 
+                          'Cases_Per_Million', 'Healthcare_Index', 'Vaccination_Rate']].corr()
+    
+    fig = go.Figure(data=go.Heatmap(
+        z=correlation_data.values,
+        x=correlation_data.columns,
+        y=correlation_data.columns,
+        colorscale='RdYlBu',
+        zmid=0,
+        text=correlation_data.round(2).values,
+        texttemplate="%{text}",
+        textfont={"size": 12},
+        hoverongaps=False
+    ))
+    
+    fig.update_layout(
+        title=dict(
+            text='🧠 NEURAL CORRELATION MATRIX',
+            x=0.5,
+            font=dict(size=20, color='#00ff88', family='Orbitron')
+        ),
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        font=dict(color='#00ff88'),
+        height=400
+    )
+    
+    return fig
+
+##### 여기서부터 이어서씀
+
+# 🎛️ QUANTUM DASHBOARD
+def create_quantum_dashboard(df):
+    """Create ultra-advanced quantum dashboard"""
+    # 3D Scatter Plot with Time Animation
+    fig = make_subplots(
+        rows=2, cols=2,
+        subplot_titles=('🌀 Quantum Bubble Matrix', '⚡ Neural Time Series', 
+                       '🔥 Severity Heat Map', '🎪 Performance Metrics'),
+        specs=[[{"type": "scatter3d"}, {"type": "scatter"}],
+               [{"type": "heatmap"}, {"type": "bar"}]]
+    )
+    
+    # 3D Bubble Plot
     fig.add_trace(
-        go.Bar(
-            x=top_countries['Country_Region'][:10],
-            y=top_countries['Confirmed'][:10],
-            name='Confirmed',
-            marker_color='rgba(102, 126, 234, 0.8)'
+        go.Scatter3d(
+            x=df['Healthcare_Index'],
+            y=df['Vaccination_Rate'],
+            z=df['Death_Rate'],
+            mode='markers',
+            marker=dict(
+                size=np.sqrt(df['Confirmed']) / 100,
+                color=df['Severity_Index'],
+                colorscale='Viridis',
+                opacity=0.8,
+                line=dict(width=2, color='white')
+            ),
+            text=df['Country_Region'],
+            hovertemplate='<b>%{text}</b><br>Healthcare: %{x}<br>Vaccination: %{y}<br>Death Rate: %{z}%<extra></extra>'
         ),
         row=1, col=1
     )
     
-    # Deaths
-    fig.add_trace(
-        go.Bar(
-            x=top_countries['Country_Region'][:10],
-            y=top_countries['Deaths'][:10],
-            name='Deaths',
-            marker_color='rgba(255, 107, 107, 0.8)'
-        ),
-        row=1, col=2
-    )
+    # Time Series Simulation
+    days = pd.date_range('2024-01-01', periods=100, freq='D')
+    trend_data = []
+    for country in df.head(5)['Country_Region']:
+        base_cases = df[df['Country_Region'] == country]['Confirmed'].iloc[0]
+        trend = np.cumsum(np.random.normal(0, base_cases/10000, 100)) + base_cases
+        trend_data.append(go.Scatter(x=days, y=trend, name=country, mode='lines+markers'))
     
-    # Recovery rate
+    for trace in trend_data:
+        fig.add_trace(trace, row=1, col=2)
+    
+    # Severity Heatmap
+    severity_matrix = df.head(10)[['Death_Rate', 'Recovery_Rate', 'Cases_Per_Million']].T
     fig.add_trace(
-        go.Scatter(
-            x=top_countries['Country_Region'][:10],
-            y=top_countries['Recovery_Rate'][:10],
-            mode='lines+markers',
-            name='Recovery Rate',
-            line=dict(color='rgba(46, 213, 115, 0.8)', width=3),
-            marker=dict(size=8)
+        go.Heatmap(
+            z=severity_matrix.values,
+            x=df.head(10)['Country_Region'],
+            y=['Death Rate', 'Recovery Rate', 'Cases/Million'],
+            colorscale='Plasma'
         ),
         row=2, col=1
     )
     
-    # Death rate
+    # Performance Bar Chart
+    top_10 = df.head(10)
     fig.add_trace(
-        go.Scatter(
-            x=top_countries['Country_Region'][:10],
-            y=top_countries['Death_Rate'][:10],
-            mode='lines+markers',
-            name='Death Rate',
-            line=dict(color='rgba(255, 107, 107, 0.8)', width=3),
-            marker=dict(size=8)
+        go.Bar(
+            x=top_10['Country_Region'],
+            y=top_10['Severity_Index'],
+            marker=dict(
+                color=top_10['Severity_Index'],
+                colorscale='Inferno',
+                line=dict(width=2, color='white')
+            )
         ),
         row=2, col=2
     )
     
     fig.update_layout(
-        title_text="📈 Top 10 Countries - Comprehensive Analysis",
-        title_x=0.5,
-        showlegend=False,
-        template="plotly_dark",
+        title=dict(
+            text='🚀 QUANTUM NEURAL DASHBOARD',
+            x=0.5,
+            font=dict(size=24, color='#00ff88', family='Orbitron')
+        ),
+        paper_bgcolor='rgba(0, 0, 0, 0)',
+        plot_bgcolor='rgba(0, 0, 0, 0)',
+        font=dict(color='#00ff88'),
         height=600
     )
     
-    # Rotate x-axis labels for better readability
-    fig.update_xaxes(tickangle=-45)
-    
     return fig
 
-def create_enhanced_table(countries_df):
-    """Create an enhanced, interactive table"""
-    # Add rank column
-    display_df = countries_df.head(20).copy()
-    display_df.insert(0, 'Rank', range(1, len(display_df) + 1))
     
-    # Format columns
-    display_df['Confirmed'] = display_df['Confirmed'].apply(lambda x: f"{x:,}")
-    display_df['Deaths'] = display_df['Deaths'].apply(lambda x: f"{x:,}")
-    display_df['Recovered'] = display_df['Recovered'].apply(lambda x: f"{x:,}")
-    display_df['Active_Cases'] = display_df['Active_Cases'].apply(lambda x: f"{x:,}")
-    display_df['Death_Rate'] = display_df['Death_Rate'].apply(lambda x: f"{x:.2f}%")
-    display_df['Recovery_Rate'] = display_df['Recovery_Rate'].apply(lambda x: f"{x:.2f}%")
-    
-    # Rename columns for display
-    display_df = display_df.rename(columns={
-        'Country_Region': 'Country',
-        'Active_Cases': 'Active Cases',
-        'Death_Rate': 'Death Rate',
-        'Recovery_Rate': 'Recovery Rate'
-    })
-    
-    return display_df
-
-# Main Dashboard Layout
-def main():
-    # Load data
-    daily_df, time_data = load_data()
-    
-    # Dashboard header
-    st.markdown("""
-    <div class="dashboard-header">
-        <h1>🦠 Global COVID-19 Analytics Dashboard</h1>
-        <p>Real-time insights and comprehensive analysis of global pandemic data</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Process data
-    totals = process_global_totals(daily_df)
-    countries_df = process_countries_data(daily_df)
-    
-    # Metrics cards
-    create_enhanced_metrics_cards(totals)
-    
-    # Main content area
-    tab1, tab2, tab3, tab4 = st.tabs(["🌍 Global Overview", "📊 Country Analysis", "📈 Trends", "📋 Data Table"])
-    
-    with tab1:
-        col1, col2 = st.columns([2, 1])
-        
-        with col1:
-            st.markdown('<div class="chart-container">', unsafe_allow_html=True)
-            world_map = create_enhanced_world_map(countries_df)
-            st.plotly_chart(world_map, use_container_width=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-        
-        with col2:
-            st.markdown("### 🏆 Top 10 Most Affected")
-            top_10 = countries_df.head(10)[['Country_Region', 'Confirmed', 'Deaths', 'Death_Rate']]
-            st.dataframe(
-                top_10,
-                column_config={
-                    "Country_Region": "Country",
-                    "Confirmed": st.column_config.NumberColumn("Confirmed", format="%d"),
-                    "Deaths": st.column_config.NumberColumn("Deaths", format="%d"),
-                    "Death_Rate": st.column_config.NumberColumn("Death Rate", format="%.2f%%")
-                },
-                hide_index=True,
-                use_container_width=True
-            )
-    
-    with tab2:
-        comparison_chart = create_enhanced_comparison_chart(countries_df)
-        st.plotly_chart(comparison_chart, use_container_width=True)
-        
-        # Country selector with advanced filters
-        st.markdown("### 🔍 Advanced Country Analysis")
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            selected_countries = st.multiselect(
-                "Select Countries for Comparison:",
-                options=countries_df['Country_Region'].tolist(),
-                default=countries_df['Country_Region'].head(5).tolist()
-            )
-        
-        with col2:
-            metric_to_compare = st.selectbox(
-                "Select Metric:",
-                options=['Confirmed', 'Deaths', 'Recovered', 'Death_Rate', 'Recovery_Rate']
-            )
-        
-        with col3:
-            chart_type = st.selectbox(
-                "Chart Type:",
-                options=['Bar Chart', 'Line Chart', 'Radar Chart']
-            )
-        
-        if selected_countries:
-            filtered_df = countries_df[countries_df['Country_Region'].isin(selected_countries)]
-            
-            if chart_type == 'Bar Chart':
-                fig = px.bar(
-                    filtered_df,
-                    x='Country_Region',
-                    y=metric_to_compare,
-                    title=f"{metric_to_compare} by Country",
-                    template="plotly_dark"
-                )
-            elif chart_type == 'Line Chart':
-                fig = px.line(
-                    filtered_df,
-                    x='Country_Region',
-                    y=metric_to_compare,
-                    title=f"{metric_to_compare} Trend",
-                    template="plotly_dark"
-                )
-            else:  # Radar Chart
-                fig = go.Figure()
-                for country in selected_countries:
-                    country_data = filtered_df[filtered_df['Country_Region'] == country].iloc[0]
-                    fig.add_trace(go.Scatterpolar(
-                        r=[country_data['Confirmed']/1000, country_data['Deaths']/100, 
-                           country_data['Recovered']/1000, country_data['Death_Rate'], 
-                           country_data['Recovery_Rate']],
-                        theta=['Confirmed (K)', 'Deaths (100s)', 'Recovered (K)', 'Death Rate', 'Recovery Rate'],
-                        fill='toself',
-                        name=country
-                    ))
-                fig.update_layout(
-                    polar=dict(radialaxis=dict(visible=True)),
-                    showlegend=True,
-                    title="Multi-Metric Country Comparison",
-                    template="plotly_dark"
-                )
-            
-            st.plotly_chart(fig, use_container_width=True)
-    
-    with tab3:
-        st.markdown("### 📈 Time Series Analysis")
-        st.info("📝 Note: Time series functionality requires historical data files. This section would show trends over time.")
-        
-        # Placeholder for time series charts
-        sample_dates = pd.date_range(start='2020-01-01', end='2023-12-31', freq='D')
-        sample_data = pd.DataFrame({
-            'Date': sample_dates,
-            'Confirmed': np.cumsum(np.random.randint(1000, 10000, len(sample_dates))),
-            'Deaths': np.cumsum(np.random.randint(10, 100, len(sample_dates))),
-            'Recovered': np.cumsum(np.random.randint(500, 5000, len(sample_dates)))
-        })
-        
-        fig = px.line(
-            sample_data,
-            x='Date',
-            y=['Confirmed', 'Deaths', 'Recovered'],
-            title="Global COVID-19 Trends Over Time (Sample Data)",
-            template="plotly_dark",
-            color_discrete_map={
-                'Confirmed': '#667eea',
-                'Deaths': '#ff6b6b',
-                'Recovered': '#2ed573'
-            }
-        )
-        
-        fig.update_layout(
-            xaxis_title="Date",
-            yaxis_title="Cases",
-            legend_title="Status"
-        )
-        
-        st.plotly_chart(fig, use_container_width=True)
-    
-    with tab4:
-        st.markdown("### 📋 Comprehensive Data Table")
-        
-        # Search and filter options
-        col1, col2 = st.columns(2)
-        with col1:
-            search_term = st.text_input("🔍 Search countries:", "")
-        with col2:
-            min_cases = st.number_input("Minimum confirmed cases:", min_value=0, value=0)
-        
-        # Filter data
-        filtered_countries = countries_df.copy()
-        if search_term:
-            filtered_countries = filtered_countries[
-                filtered_countries['Country_Region'].str.contains(search_term, case=False, na=False)
-            ]
-        filtered_countries = filtered_countries[filtered_countries['Confirmed'] >= min_cases]
-        
-        # Display enhanced table
-        enhanced_table = create_enhanced_table(filtered_countries)
-        st.dataframe(
-            enhanced_table,
-            use_container_width=True,
-            height=400
-        )
-        
-        # Download button
-        csv = enhanced_table.to_csv(index=False)
-        st.download_button(
-            label="📥 Download Data as CSV",
-            data=csv,
-            file_name="covid_data.csv",
-            mime="text/csv"
-        )
-    
-    # Sidebar with additional information
-    with st.sidebar:
-        st.markdown("### 📊 Dashboard Info")
-        st.info("""
-        This enhanced dashboard provides:
-        - 🌍 Interactive global map
-        - 📈 Real-time statistics
-        - 🔍 Advanced filtering
-        - 📊 Multiple visualization types
-        - 📋 Comprehensive data tables
-        """)
-        
-        st.markdown("### ⚙️ Settings")
-        auto_refresh = st.checkbox("Auto-refresh data", value=False)
-        if auto_refresh:
-            st.info("Auto-refresh is enabled")
-        
-        st.markdown("### 📈 Quick Stats")
-        if not countries_df.empty:
-            st.metric("Countries Affected", len(countries_df))
-            st.metric("Avg Death Rate", f"{countries_df['Death_Rate'].mean():.2f}%")
-            st.metric("Avg Recovery Rate", f"{countries_df['Recovery_Rate'].mean():.2f}%")
-
-if __name__ == "__main__":
-    main()
